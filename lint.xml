@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="NewApi">
+        <ignore path="src/com/voicecallmanagementandrecord/CallHistoryActivity.java" />
+    </issue>
+    <issue id="SimpleDateFormat">
+        <ignore path="src/com/voicecallmanagementandrecord/HomeActivity.java" />
+    </issue>
+</lint>
