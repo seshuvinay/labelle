@@ -139,6 +139,7 @@ public class Util {
 						try {
 							obj = new JSONObject(content);
 							dba.deleteCall(obj.getString("call_id"));
+							
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

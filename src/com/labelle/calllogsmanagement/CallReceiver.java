@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 @SuppressLint("InlinedApi")
 public class CallReceiver extends BroadcastReceiver {
@@ -54,17 +55,18 @@ public class CallReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		ctx = context;
 
-		if (intent.hasExtra(Intent.EXTRA_PHONE_NUMBER)
-				&& !intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER).equals("")) {
+		if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
 			sharedPreferences = ctx.getSharedPreferences("MyPref", 0);
 			editor = sharedPreferences.edit();
 			editor.putString("phone",
-					intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
+					intent.getExtras().getString(Intent.EXTRA_PHONE_NUMBER));
+			Toast.makeText(ctx,
+					intent.getExtras().getString(Intent.EXTRA_PHONE_NUMBER),
+					5000).show();
 
 			editor.commit();
 		}
 
-		intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
 		if (phoneListener == null)
 			phoneListener = new MyPhoneStateListener();
 		TelephonyManager telephony = (TelephonyManager) context
@@ -80,11 +82,12 @@ public class CallReceiver extends BroadcastReceiver {
 		private boolean recordState = false;
 
 		public void onCallStateChanged(int state, String incomingNumber) {
-			sharedPreferences = ctx.getSharedPreferences("MyPref", 0);
-			prevState = sharedPreferences.getString("prev_state", "idle");
+			
 
 			switch (state) {
 			case TelephonyManager.CALL_STATE_IDLE:
+				sharedPreferences = ctx.getSharedPreferences("MyPref", 0);
+				prevState = sharedPreferences.getString("prev_state", "idle");
 				if (prevState.equals("offhook")) {
 					try {
 						if (recorder != null && recordState) {
@@ -110,10 +113,6 @@ public class CallReceiver extends BroadcastReceiver {
 									.getLong("record_start", 0)), callType,
 							fileName);
 
-					editor = sharedPreferences.edit();
-					editor.putString("phone", "");
-					editor.commit();
-
 				}
 				editor = sharedPreferences.edit();
 				editor.putString("prev_state", "idle");
@@ -122,9 +121,12 @@ public class CallReceiver extends BroadcastReceiver {
 				Log.d("DEBUG", "IDLE");
 				break;
 			case TelephonyManager.CALL_STATE_OFFHOOK:
+				sharedPreferences = ctx.getSharedPreferences("MyPref", 0);
+				prevState = sharedPreferences.getString("prev_state", "idle");
 				if (prevState.equals("idle")) {
 					editor = sharedPreferences.edit();
 					editor.putString("call_type", "Outgoing Call");
+					editor.commit();
 
 				} else if (prevState.equals("ringing")) {
 					editor = sharedPreferences.edit();
@@ -142,8 +144,7 @@ public class CallReceiver extends BroadcastReceiver {
 						editor.putLong("record_start", recordStartTime);
 						filePath = getFilePath();
 						MediaRecorder mRecorder = new MediaRecorder();
-						mRecorder
-								.setAudioSource(MediaRecorder.AudioSource.MIC);
+						mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 						mRecorder
 								.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
 						mRecorder
@@ -182,9 +183,11 @@ public class CallReceiver extends BroadcastReceiver {
 				Log.d("DEBUG", "OFFHOOK");
 				break;
 			case TelephonyManager.CALL_STATE_RINGING:
+				sharedPreferences = ctx.getSharedPreferences("MyPref", 0);
+				prevState = sharedPreferences.getString("prev_state", "idle");
 				editor = sharedPreferences.edit();
-
-				editor.putString("phone", incomingNumber);
+				if (!incomingNumber.equals(""))
+					editor.putString("phone", incomingNumber);
 
 				editor.putString("prev_state", "ringing");
 				editor.commit();
@@ -202,7 +205,8 @@ public class CallReceiver extends BroadcastReceiver {
 
 			file.mkdirs();
 		}
-		File file2 = new File(file, recordStartTime + file_exts[currentFormat]);
+		File file2 = new File(file, Long.toString(System.currentTimeMillis())
+				+ file_exts[currentFormat]);
 		return file2.getAbsolutePath();
 	}
 

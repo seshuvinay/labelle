@@ -29,7 +29,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 					final android.net.NetworkInfo wifi = connMgr
 							.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-					if (wifi.isAvailable())
+					if (wifi.isConnected()) 
 						util.saveWifiStateToDB("Connected",
 								Long.toString(System.currentTimeMillis()));
 

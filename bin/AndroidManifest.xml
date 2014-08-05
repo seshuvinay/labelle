@@ -58,11 +58,7 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.labelle.calllogsmanagement.AlarmReceiver"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
+       
 
         <service
             android:name="com.labelle.calllogsmanagement.UploadService"

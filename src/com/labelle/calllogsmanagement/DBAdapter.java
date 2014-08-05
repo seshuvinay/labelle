@@ -1,5 +1,7 @@
 package com.labelle.calllogsmanagement;
 
+import java.io.File;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -77,6 +79,15 @@ public class DBAdapter {
 	}
 
 	public void deleteCall(String id) {
+		Cursor cr = database.query("calls", null, "_id=" + id, null, null,
+				null, null);
+		cr.moveToFirst();
+		String inputFile = cr.getString(cr.getColumnIndex("filepath"));
+		try {
+			new File(inputFile).delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		database.delete("calls", "_id=" + id, null);
 	}
 }
