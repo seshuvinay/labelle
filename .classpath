@@ -6,5 +6,6 @@
 	<classpathentry exported="true" kind="lib" path="F:/android-async-http-1.4.4.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry exported="true" kind="lib" path="F:/android-error-reporter.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

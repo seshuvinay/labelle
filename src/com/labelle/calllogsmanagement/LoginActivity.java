@@ -1,5 +1,6 @@
 package com.labelle.calllogsmanagement;
 
+import de.quist.app.errorreporter.ExceptionReporter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -31,12 +32,17 @@ public class LoginActivity extends Activity {
 	SharedPreferences sharedPreferences;
 	SharedPreferences.Editor editor;
 	Context ctx;
+	private ExceptionReporter reporter;
 
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		try {
+			reporter = ExceptionReporter.register(LoginActivity.this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		Display deviceDisplay = ((WindowManager) getSystemService(Context.WINDOW_SERVICE))
 				.getDefaultDisplay();
 		deviceWidth = deviceDisplay.getWidth();

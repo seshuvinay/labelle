@@ -22,6 +22,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import de.quist.app.errorreporter.ExceptionReporter;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -88,6 +90,7 @@ public class HomeActivity extends Activity {
 	public String diaogDismissValue = "no";
 	long synchronizeTime;
 	DateFormat dateFormat;
+	private ExceptionReporter reporter;
 
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
@@ -144,7 +147,11 @@ public class HomeActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		try {
+			reporter = ExceptionReporter.register(HomeActivity.this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		Display deviceDisplay = ((WindowManager) getSystemService(Context.WINDOW_SERVICE))
 				.getDefaultDisplay();
 		deviceWidth = deviceDisplay.getWidth();

@@ -1,5 +1,6 @@
 package com.labelle.calllogsmanagement;
 
+import de.quist.app.errorreporter.ExceptionReporter;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.os.IBinder;
 public class UploadService extends Service {
 
 	CountDownTimer timer;
+	private ExceptionReporter reporter;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -23,7 +25,12 @@ public class UploadService extends Service {
 
 	@Override
 	public int onStartCommand(final Intent intent, int flags, int startId) {
-		timer = new CountDownTimer(15 * 60 * 1000, 1000) {
+		try {
+			reporter = ExceptionReporter.register(UploadService.this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		timer = new CountDownTimer(1 * 60 * 1000, 1000) {
 
 			@Override
 			public void onTick(long millisUntilFinished) {

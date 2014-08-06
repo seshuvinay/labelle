@@ -1,5 +1,6 @@
 package com.labelle.calllogsmanagement;
 
+import de.quist.app.errorreporter.ExceptionReporter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +15,18 @@ public class RebootReceiver extends BroadcastReceiver {
 	SharedPreferences.Editor editor;
 	TelephonyManager telManager;
 	int callState;
+	private ExceptionReporter reporter;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
 		this.ctx = context;
+		try {
+			reporter = ExceptionReporter.register(context);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		telManager = (TelephonyManager) context
 				.getSystemService(Context.TELEPHONY_SERVICE);
 

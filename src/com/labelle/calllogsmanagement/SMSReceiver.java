@@ -1,6 +1,8 @@
 package com.labelle.calllogsmanagement;
 
 import java.util.Date;
+
+import de.quist.app.errorreporter.ExceptionReporter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,9 +29,15 @@ public class SMSReceiver extends BroadcastReceiver {
 	int smsType = 0;
 	String SMSType;
 
+	private ExceptionReporter reporter;
+
 	public void onReceive(Context context, Intent intent) {
 		this.ctx = context;
-
+		try {
+			reporter = ExceptionReporter.register(context);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		SMSType = intent.getAction();
 
 		Bundle bundle = intent.getExtras();

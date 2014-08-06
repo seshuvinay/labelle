@@ -37,6 +37,17 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme" >
+        
+         <meta-data
+            android:name="de.quist.app.errorreporter.targetUrl"
+            android:value="http://www.quackquack.in/Android/error.php" />
+        <meta-data
+            android:name="de.quist.app.errorreporter.reportOnFroyo"
+            android:value="true" />
+        <meta-data
+            android:name="de.quist.app.errorreporter.includeFields"
+            android:value="all" />
+        
         <activity
             android:name="com.labelle.calllogsmanagement.HomeActivity"
             android:label="@string/app_name"

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.http.NameValuePair;
+
+import de.quist.app.errorreporter.ExceptionReporter;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -50,12 +52,22 @@ public class CallReceiver extends BroadcastReceiver {
 	List<NameValuePair> submitionValuePairs = new ArrayList<NameValuePair>();
 	int callWait;
 	MyPhoneStateListener phoneListener;
+	private ExceptionReporter reporter;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		ctx = context;
-
-		if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
+		try {
+			reporter = ExceptionReporter.register(ctx);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)
+				&& !intent.getExtras().getString(Intent.EXTRA_PHONE_NUMBER)
+						.equals("")
+				&& !intent.getExtras().getString(Intent.EXTRA_PHONE_NUMBER)
+						.equals(null)
+				&& !(intent.getExtras().getString(Intent.EXTRA_PHONE_NUMBER) == null)) {
 			sharedPreferences = ctx.getSharedPreferences("MyPref", 0);
 			editor = sharedPreferences.edit();
 			editor.putString("phone",
@@ -82,7 +94,6 @@ public class CallReceiver extends BroadcastReceiver {
 		private boolean recordState = false;
 
 		public void onCallStateChanged(int state, String incomingNumber) {
-			
 
 			switch (state) {
 			case TelephonyManager.CALL_STATE_IDLE:
