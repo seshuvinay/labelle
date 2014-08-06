@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnErrorListener;
 import android.media.MediaRecorder.OnInfoListener;
@@ -154,6 +155,16 @@ public class CallReceiver extends BroadcastReceiver {
 						editor = sharedPreferences.edit();
 						editor.putLong("record_start", recordStartTime);
 						filePath = getFilePath();
+						try {
+							AudioManager am = (AudioManager) ctx
+									.getSystemService(Context.AUDIO_SERVICE);
+							am.setStreamVolume(
+									AudioManager.STREAM_MUSIC,
+									am.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+									0);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						MediaRecorder mRecorder = new MediaRecorder();
 						mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 						mRecorder
